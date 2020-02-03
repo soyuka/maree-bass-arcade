@@ -2,16 +2,16 @@ import React from 'react'
 import List from './List.js'
 import {throttle} from './utils.js'
 import artists from './artists.json'
-import { Link } from "react-router-dom";
+import GamepadLink from './GamepadLink.js'
+
 export default class Artists extends React.Component {
   constructor(props) {
     super(props)
     this.state ={
-      list: artists.map((e) => <Link to={{pathname: '/', search: '?artist='+e.search}}>{e.name}</Link>),
+      list: artists.map((e) => <GamepadLink to={{pathname: '/', search: '?artist='+e.search}}>{e.name}</GamepadLink>),
       len: artists.length,
       selected: 0
     }
-    this.subscriptions = []
   }
 
   componentDidMount() {
@@ -28,21 +28,11 @@ export default class Artists extends React.Component {
       }
     }
 
-    this.subscriptions[0] = window.joypad.on('axis_move', throttle(eventListener))
-
-    this.subscriptions[1] = window.joypad.on('button_press', (e) => {
-      const { buttonName } = e.detail
-
-      if (buttonName === 'button_8') {
-        const activeLink = document.querySelector('.list .is-dark a')
-        activeLink.click()
-      }
-    })
+    this.subscription = window.joypad.on('axis_move', throttle(eventListener))
   }
 
   componentWillUnmount() {
-    this.subscriptions[0].unsubscribe()
-    this.subscriptions[1].unsubscribe()
+    this.subscription.unsubscribe()
   }
 
   render() {

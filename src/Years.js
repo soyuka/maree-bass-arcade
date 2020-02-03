@@ -1,17 +1,16 @@
 import React from 'react'
 import List from './List.js'
 import {throttle} from './utils.js'
-import { Link } from "react-router-dom";
+import GamepadLink from './GamepadLink.js'
 
 export default class Years extends React.Component {
   constructor(props) {
     super(props)
     this.state ={
-      list: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019].map((e) => <Link to={{pathname: '/', search: '?year='+e}}>{e}</Link>),
+      list: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019].map((e) => <GamepadLink to={{pathname: '/', search: '?year='+e}}>{e}</GamepadLink>),
       len: 8,
       selected: 0
     }
-    this.subscriptions = []
   }
 
   componentDidMount() {
@@ -28,22 +27,11 @@ export default class Years extends React.Component {
       }
     }
 
-    this.subscriptions[0] = window.joypad.on('axis_move', throttle(eventListener))
-
-    this.subscriptions[1] = window.joypad.on('button_press', (e) => {
-      const { buttonName } = e.detail
-
-      if (buttonName === 'button_8') {
-        const activeLink = document.querySelector('.list .is-dark a')
-        activeLink.click()
-      }
-    })
-
+    this.subscription = window.joypad.on('axis_move', throttle(eventListener))
   }
 
   componentWillUnmount() {
-    this.subscriptions[0].unsubscribe()
-    this.subscriptions[1].unsubscribe()
+    this.subscription.unsubscribe()
   }
 
   render() {
