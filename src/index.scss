@@ -1,0 +1,25 @@
+@font-face {
+  font-family: 'Press Start 2P';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./PressStart2P-Regular.ttf')  format('truetype');
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  font-family: 'Press Start 2P', cursive;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+// Gridly by https://github.com/IonicaBizau/gridly
+.row{display:flex}.col{flex:1}@media(max-width:48em){.row{flex-direction:column}.col{flex:0 0 100%}}
+.col-tenth{flex:0 0 10%}.col-fifth{flex:0 0 20%}.col-quarter{flex:0 0 25%}.col-third{flex:0 0 33.3333334%}.col-half{flex:0 0 50%}

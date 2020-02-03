@@ -1,0 +1,25 @@
+.game {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+
+}
+
+.separator {
+  padding: 2em 0 6em;
+  text-align: center;
+}
+
+.footer {
+  width: 100%;
+  position: fixed;
+  display: flex;
+  bottom: 0;
+
+  .col {
+    padding: 0 1em;
+    margin: 0 1em;
+  }
+}

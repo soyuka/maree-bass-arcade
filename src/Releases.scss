@@ -1,0 +1,46 @@
+.release-list-container {
+  height: 99vh;
+  overflow: hidden;
+}
+
+.release-list {
+  margin-top: 2em;
+  list-style: none;
+  display: flex;
+  padding: 0 0 2em;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  .nes-container {
+    padding: 0;
+  }
+
+  li {
+    padding: 0.25em 1em;
+  }
+
+  img {
+    visibility: hidden;
+  }
+}
+
+.release-detail {
+  margin-top: 2em;
+  transition: opacity 1s;
+
+  &.pixelating > * {
+    transition: opacity 1s;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  h1 {
+    word-wrap: anywhere;
+  }
+
+  img {
+    visibility: hidden;
+    padding: 1em;
+    width: 100%;
+  }
+}
