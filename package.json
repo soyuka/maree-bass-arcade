@@ -9,6 +9,7 @@
     "gamepads": "^1.2.1",
     "joypad.js": "^2.0.3",
     "node-sass": "^4.13.1",
+    "qrcode": "^1.4.4",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-router": "^5.1.2",

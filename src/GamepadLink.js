@@ -4,10 +4,15 @@ import { Link, withRouter } from "react-router-dom";
 class GamepadLinkWithoutRouter extends React.Component {
   componentDidMount() {
     this.subscription = window.joypad.on('button_press', (e) => {
+      if (!this.props.focused) return
+
       const { buttonName } = e.detail
 
       if (buttonName === 'button_8') {
         this.props.history.push(this.props.to.pathname + this.props.to.search)
+        if (this.props.onSelect) {
+          this.props.onSelect(this.props.selected)
+        }
       }
     })
   }

@@ -13,11 +13,13 @@ releases.collection = releases.collection.map((e) => {
   e.release_date = new Date(e.release_date).getFullYear()
   return e
 })
+.filter((e) => e.purchase_url)
 
 export default class Releases extends React.Component {
   constructor(props) {
     super(props)
     this.imagesLoaded = 0
+    this.subscriptions = []
 
     this.state = {
       collection: [],
@@ -79,13 +81,25 @@ export default class Releases extends React.Component {
       }
     }
 
-    this.subscription = window.joypad.on('axis_move', throttle(eventListener))
+    this.subscriptions[0] = window.joypad.on('axis_move', throttle(eventListener))
+    this.subscriptions[1] = window.joypad.on('button_press', (e) => {
+      const { buttonName } = e.detail
+
+      if (buttonName === 'button_9') {
+        this.props.history.push('/picks')
+        return
+      }
+
+      if (buttonName === 'button_8') {
+        this.props.onSelect(this.state.collection[this.state.selected])
+      }
+    })
 
     this.initCollection()
   }
 
   componentWillUnmount() {
-    this.subscription.unsubscribe()
+    this.subscriptions.map(e => e.unsubscribe())
   }
 
   render() {

@@ -8,9 +8,9 @@ export default class Artists extends React.Component {
   constructor(props) {
     super(props)
     this.state ={
-      list: artists.map((e) => <GamepadLink to={{pathname: '/', search: '?artist='+e.search}}>{e.name}</GamepadLink>),
+      list: artists.map((e) => <GamepadLink to={{pathname: '/', search: '?artist='+e.search}} onSelect={this.props.selectArtist}>{e.name}</GamepadLink>),
       len: artists.length,
-      selected: 0
+      selected: props.selected || 0
     }
   }
 

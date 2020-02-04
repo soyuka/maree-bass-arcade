@@ -3,5 +3,9 @@ https://api-v2.soundcloud.com/users/9757708/albums?client_id=f0sxU3Az3dcl0lS1M9w
 # TODO
 
 - Animate release details
-- Keep state in memory (year/artist current selected)
-- Do selection + qrcode
+- Credit
+
+jq '.collection[].purchase_url' src/releases.json >> url
+xargs -n 1 curl -O < artworks_list_t500x500
+
+

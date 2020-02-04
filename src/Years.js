@@ -7,9 +7,9 @@ export default class Years extends React.Component {
   constructor(props) {
     super(props)
     this.state ={
-      list: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019].map((e) => <GamepadLink to={{pathname: '/', search: '?year='+e}}>{e}</GamepadLink>),
+      years: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019].map((e) => <GamepadLink to={{pathname: '/', search: '?year='+e}} onSelect={this.props.selectYear}>{e}</GamepadLink>),
       len: 8,
-      selected: 0
+      selected: props.selected || 0
     }
   }
 
@@ -35,6 +35,6 @@ export default class Years extends React.Component {
   }
 
   render() {
-    return <List list={this.state.list} selected={this.state.selected} itemClassName='nes-container' className='list' />
+    return <List list={this.state.years} selected={this.state.selected} itemClassName='nes-container' className='list' />
   }
 }
