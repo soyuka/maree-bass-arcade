@@ -96,10 +96,10 @@ export default class Game extends React.Component {
           </Switch>
         </section>
         <footer className="footer">
-          <NavLink to="/" exact className="col nes-btn" activeClassName="is-disabled">Releases (1)</NavLink>
-          <NavLink to="/artists" className="col nes-btn" activeClassName="is-disabled">Artists (2)</NavLink>
-          <NavLink to="/years" className="col nes-btn" activeClassName="is-disabled">Year (3)</NavLink>
-          <NavLink to="/picks" className="col nes-btn" activeClassName="is-disabled">{this.state.selected.length}<i className="nes-icon is-small coin"></i> (Select)</NavLink>
+          <NavLink to="/" exact className="col nes-btn" activeClassName="is-disabled">Releases</NavLink>
+          <NavLink to="/artists" className="col nes-btn" activeClassName="is-disabled">Artists</NavLink>
+          <NavLink to="/years" className="col nes-btn" activeClassName="is-disabled">Year</NavLink>
+          <NavLink to="/picks" className="col nes-btn" activeClassName="is-disabled">{this.state.selected.length}<i className="nes-icon is-small coin"></i></NavLink>
         </footer>
       </div>
   }

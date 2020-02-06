@@ -10,7 +10,7 @@ export default class Picks extends React.Component
   }
 
   componentDidMount() {
-    const url = 'https://mareebass.fr/docs' + this.props.selected.reduce((a, b, i) => {
+    const url = 'https://mareebass.fr/dl.php?' + this.props.selected.reduce((a, b, i) => {
       return a + `${i === 0 ? '?' : '&'}i[]=`+b.id
     }, '')
 
