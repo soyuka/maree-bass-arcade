@@ -112,7 +112,9 @@ export default class Releases extends React.Component {
         <List list={this.state.list} selected={this.state.selected} itemClassName='nes-container' className='release-list' />
       </div>
       <div className='col-third release-detail'>
-        <PixelatedImg src={current.artwork_url_large} alt={current.title} className='release-detail-cover' resolution='4' size='8' />
+        <div className='release-detail-cover-container'>
+          <PixelatedImg src={current.artwork_url_large} alt={current.title} className='release-detail-cover' resolution='4' size='8' />
+        </div>
         <h1>{current.title}</h1> <span>({current.release_date})</span>
       </div>
     </div>

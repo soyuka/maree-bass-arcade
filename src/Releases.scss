@@ -12,6 +12,7 @@
   justify-content: center;
 
   .nes-container {
+    display: flex;
     padding: 0;
   }
 
@@ -26,6 +27,7 @@
 
 .release-detail {
   margin-top: 2em;
+  padding-right: 2em;
   transition: opacity 1s;
 
   &.pixelating > * {
@@ -43,4 +45,10 @@
     padding: 1em;
     width: 100%;
   }
+}
+
+.release-detail-cover-container {
+  height: 448px;
+  width: 448px;
+  padding-bottom: 2em;
 }
