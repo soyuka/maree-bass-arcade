@@ -9,3 +9,12 @@ jq '.collection[].purchase_url' src/releases.json >> url
 xargs -n 1 curl -O < artworks_list_t500x500
 
 
+jq '.collection[] | {id: .id, url: .purchase_url}' releases.json | jq -s -c > releases_id.json
+
+jq -r '.[].url | select(. != null) | select(. | test("bit.ly"))'  releases_id.json  |
+  while IFS=$'\t' read -r link; do
+    curl -s -I $link)
+    echo $headers
+    # echo $headers | grep Location | awk '{"print $2"}';
+  done
+
