@@ -20,6 +20,7 @@ export default class PixelatedImg extends React.Component {
   }
 
   removeCanvas() {
+    if (!this.parentNode || !this.pixelated || !this.pixelated.canvas) return
     this.parentNode.removeChild(this.pixelated.canvas)
   }
 
@@ -57,10 +58,6 @@ export default class PixelatedImg extends React.Component {
   }
 
   componentWillUnmount() {
-    if (!this.pixelated && this.parentNode) {
-      return
-    }
-
     this.removeCanvas()
   }
 

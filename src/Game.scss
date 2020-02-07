@@ -14,3 +14,21 @@
     margin: 0 1em;
   }
 }
+
+.coin-rotate {
+  display: inline-block;
+  width: 27px;
+  height: 27px;
+  animation: coin 1s steps(9, end) infinite;
+  background: url('./coin.png');
+  background-position: 0 center;
+  vertical-align: bottom;
+
+  &.nes-btn {
+    transform: scale(0.75);
+  }
+}
+
+@keyframes coin {
+  to { background-position: -243px; }
+}

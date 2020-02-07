@@ -30,9 +30,12 @@ class FocusableElement extends React.Component {
   }
 }
 
-const List = ({list, selected, itemClassName, className}) => {
+const List = ({list, selected, itemClassName, className, selectedList = []}) => {
   return <ul className={className}>
-    {list.map((item, i) => <FocusableElement className={itemClassName} key={item.key || i} focus={selected === i}>{React.cloneElement(item, { selected, focused: i === selected })}</FocusableElement>)}
+    {list.map((item, i) => {
+      const isSelected = selectedList.indexOf(i) !== -1
+      return <FocusableElement className={itemClassName + (isSelected ? ' is-selected' : '')} key={item.key || i} focus={selected === i}>{React.cloneElement(item, { selected, focused: i === selected, isSelected })}</FocusableElement>
+    })}
   </ul>
 }
 export default List

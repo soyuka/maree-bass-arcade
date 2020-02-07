@@ -15,6 +15,10 @@ releases.collection = releases.collection.map((e) => {
 })
 .filter((e) => e.purchase_url)
 
+function ReleaseItem({src, alt, title, isSelected}) {
+  return <div><i className='coin-rotate'></i><PixelatedImg src={src} alt={title} resolution='4' key={title} /></div>
+}
+
 export default class Releases extends React.Component {
   constructor(props) {
     super(props)
@@ -24,6 +28,7 @@ export default class Releases extends React.Component {
     this.state = {
       collection: [],
       list: [],
+      selectedList: [],
       len: 0,
       selected: 0
     }
@@ -45,22 +50,26 @@ export default class Releases extends React.Component {
       }
     }
 
-    this.setState({collection, list: collection.map((e) => {
+    this.setState({collection, list: collection.map((e, i) => {
       // Force key to proper refresh when collection changes
-      return <PixelatedImg src={e.artwork_url} alt={e.title} resolution='4' key={e.title} />
+      return <ReleaseItem src={e.artwork_url} alt={e.title} title={e.title} />
     }), len: collection.length})
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.location.search !== prevProps.location.search) {
-      this.initCollection()
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (this.props.location.search !== prevProps.location.search) {
+  //     this.initCollection()
+  //   }
+  // }
 
   componentDidMount() {
     const eventListener = (e) => {
       const { directionOfMovement } = e.detail
       const selected = this.state.selected
+      if (!document.querySelector('.release-list')) {
+        return
+      }
+
       const nbColumns = getColumnNumber(document.querySelector('.release-list'))
       // const nbLines = Math.floor(this.state.len / nbColumns)
 
@@ -91,6 +100,16 @@ export default class Releases extends React.Component {
       }
 
       if (buttonName === 'button_8') {
+        const selectedList = [...this.state.selectedList]
+        const index = selectedList.indexOf(this.state.selected)
+        if (index !== -1) {
+          selectedList.splice(index, 1);
+        } else {
+          selectedList.push(this.state.selected)
+        }
+
+        this.setState({selectedList})
+
         this.props.onSelect(this.state.collection[this.state.selected])
       }
     })
@@ -109,7 +128,7 @@ export default class Releases extends React.Component {
 
     return <div className='row'>
       <div className='col release-list-container'>
-        <List list={this.state.list} selected={this.state.selected} itemClassName='nes-container' className='release-list' />
+        <List list={this.state.list} selected={this.state.selected} itemClassName='nes-container' className='release-list' selectedList={this.state.selectedList}/>
       </div>
       <div className='col-third release-detail'>
         <div className='release-detail-cover-container'>
