@@ -1,6 +1,6 @@
 .releases {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .release-list-container {
@@ -72,8 +72,10 @@
 
   h1 {
     margin-top: 1em;
-    word-wrap: anywhere;
-    max-width: 200px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    max-width: 250px;
   }
 
   img {
@@ -85,6 +87,9 @@
   }
 
   .release-detail-cover-container {
+    display: flex;
+    align-items: center;
+    height: 300px;
     width: 250px;
     padding-bottom: 2em;
   }
