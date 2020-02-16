@@ -3,17 +3,15 @@ import Years from './Years.js'
 import Artists from './Artists.js'
 import Releases from './Releases.js'
 import Picks from './Picks.js'
+import Credits from './Credits.js'
 import {
   Switch,
   Route,
-  NavLink,
-  withRouter
+  NavLink
 } from "react-router-dom";
 import './Game.scss'
 import {throttle} from './utils.js'
-
-const ReleasesWithRouter = withRouter(Releases)
-const PicksWithRouter = withRouter(Picks)
+import demo from './demo.js'
 
 export default class Game extends React.Component {
   constructor(props) {
@@ -34,20 +32,25 @@ export default class Game extends React.Component {
     }
 
     this.history = props.history
-    this.yearSelected = 0
-    this.artistSelected = 0
+    this.yearFocused = 0
+    this.artistFocused = 0
     this.state = {
       selected: []
     }
     this.subscriptions = []
+    this.demoTimeout = null
+    this.isDemoRunning = false
+    // 5 min
+    this.demoStartsIn = 300000
+    // this.demoStartsIn = 2000
   }
 
-  selectYear(selected) {
-    this.yearSelected = selected
+  selectYear(focused) {
+    this.yearFocused = focused
   }
 
-  selectArtist(selected) {
-    this.artistSelected = selected
+  selectArtist(focused) {
+    this.artistFocused = focused
   }
 
   select(item) {
@@ -82,23 +85,63 @@ export default class Game extends React.Component {
     }
   }
 
+  resetState() {
+    this.setState({
+      selected: []
+    })
+
+    this.yearFocused = 0
+    this.artistFocused = 0
+    this.history.push('/')
+  }
+
+  startDemo() {
+    if (this.isDemoRunning) {
+      console.log('should not happend')
+      return
+    }
+
+    console.log('start demo')
+    this.isDemoRunning = true
+    document.getElementById('root').classList.add('demo')
+    demo(() => this.isDemoRunning, () => {
+      setTimeout(() => {
+        //end demo, restart timer
+        this.stopDemo()
+      }, 50000)
+    })
+  }
+
+  resetDemoTimeout() {
+    if (this.demoTimeout) clearTimeout(this.demoTimeout)
+    this.demoTimeout = setTimeout(() => {
+      this.startDemo()
+    }, this.demoStartsIn)
+  }
+
+  stopDemo() {
+    console.log('stop demo')
+    if (this.isDemoRunning === true) {
+      document.getElementById('root').classList.remove('demo')
+      this.isDemoRunning = false
+      this.resetState()
+    }
+
+    this.resetDemoTimeout()
+  }
+
   componentDidMount() {
     this.subscriptions[0] = window.joypad.on('button_press', (e) => {
-      const { buttonName } = e.detail
+      const { buttonName, demo } = e.detail
+
+      if (!demo) this.stopDemo()
 
       if (this.moveKonami(buttonName)) {
         return
       }
 
       if (this.props.location.pathname === '/picks') {
-        this.setState({
-          selected: []
-        })
-
-        this.yearSelected = 0
-        this.artistSelected = 0
-
-        this.history.push('/')
+        this.resetState()
         return
       }
 
@@ -120,7 +163,8 @@ export default class Game extends React.Component {
     })
 
     this.subscriptions[1] = window.joypad.on('axis_move', throttle((event) => {
-      const { directionOfMovement } = event.detail
+      const { directionOfMovement, demo } = event.detail
+      if (!demo) this.stopDemo()
       this.moveKonami(directionOfMovement)
     }))
 
@@ -141,25 +185,27 @@ export default class Game extends React.Component {
         }
       }
     })()
+
+    this.resetDemoTimeout()
   }
 
   componentWillUnmount() {
     this.subscriptions.map(sub => sub.unsubscribe())
+    this.stopDemo()
+    clearTimeout(this.demoTimeout)
   }
 
   render() {
     return <div className="game">
         <section className="content">
           <Switch>
-            <Route path="/years">
-              <Years selected={this.yearSelected} selectYear={this.selectYear.bind(this)} />
-            </Route>
-            <Route path="/artists">
-              <Artists selected={this.artistSelected} selectArtist={this.selectArtist.bind(this)} />
-            </Route>
-            <Route path="/picks"><PicksWithRouter selected={this.state.selected} /></Route>
-            <Route path="/credits">Credits</Route>
-            <Route path="/" exact><ReleasesWithRouter onSelect={this.select.bind(this)} selected={this.selected} /></Route>
+            <Route path="/years" render={() => <Years focused={this.yearFocused} selectYear={this.selectYear.bind(this)} />} />
+            <Route path="/artists" render={() => <Artists focused={this.artistFocused} selectArtist={this.selectArtist.bind(this)} />} />
+            <Route path="/picks" render={(routerProps) => <Picks selected={this.state.selected} {...routerProps} />} />
+            <Route path="/credits" render={() => <Credits />} />
+            <Route path="/release/artist/:artist" render={(routeProps) => <Releases onSelect={this.select.bind(this)} selected={this.state.selected} {...routeProps} />} />
+            <Route path="/release/year/:year" render={(routeProps) => <Releases onSelect={this.select.bind(this)} selected={this.state.selected} {...routeProps} />} />
+            <Route path="/" exact render={(routeProps) => <Releases onSelect={this.select.bind(this)} selected={this.state.selected} {...routeProps} />} />
           </Switch>
         </section>
         <footer className="footer">

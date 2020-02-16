@@ -37,7 +37,7 @@ export default class PixelatedImg extends React.Component {
 
   handleImageLoaded() {
     requestAnimationFrame(() => {
-      this.pixelate()
+       this.pixelate()
     })
   }
 
@@ -52,13 +52,11 @@ export default class PixelatedImg extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.src !== prevProps.src) {
-      this.removeCanvas()
+      try {
+        this.removeCanvas()
+      } catch (e) {}
       this.createImg()
     }
-  }
-
-  componentWillUnmount() {
-    this.removeCanvas()
   }
 
   render() {

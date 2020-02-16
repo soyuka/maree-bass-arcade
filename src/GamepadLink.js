@@ -9,7 +9,8 @@ class GamepadLinkWithoutRouter extends React.Component {
       const { buttonName } = e.detail
 
       if (buttonName === 'button_8') {
-        this.props.history.push(this.props.to.pathname + this.props.to.search)
+        this.props.history.push(this.props.to.pathname)
+
         if (this.props.onSelect) {
           this.props.onSelect(this.props.selected)
         }

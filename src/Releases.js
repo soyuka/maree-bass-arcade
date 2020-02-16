@@ -2,21 +2,14 @@ import React from 'react'
 import List from './List.js'
 import PixelatedImg from './PixelatedImg.js'
 import {throttle, normalize, getColumnNumber} from './utils.js'
-import releases from './releases.json'
+import database from './database.json'
 import './Releases.scss'
 
-//sanitize
-releases.collection = releases.collection.map((e) => {
-  e.title = e.title.replace('https://www.mareebass.fr', '').replace('free download on ', '').replace('download & support on ', '').replace('...', '').replace('free on', '').replace('..', '')
-  e.artwork_url = e.artwork_url.replace('https://i1.sndcdn.com/', '/artworks/')
-  e.artwork_url_large = e.artwork_url.replace('large', 't500x500')
-  e.release_date = new Date(e.release_date).getFullYear()
-  return e
-})
-.filter((e) => e.purchase_url)
+// skip things I can't download
+const releases = database.filter((e) => e.download)
 
-function ReleaseItem({src, alt, title, isSelected}) {
-  return <div><i className='coin-rotate'></i><PixelatedImg src={src} alt={title} resolution='4' key={title} /></div>
+function ReleaseItem({src, alt, selected}) {
+  return <div className={'coin-container ' + (selected ? ' is-selected' : '')}><i className='coin-rotate'></i><PixelatedImg src={src} alt={alt} resolution='4' /></div>
 }
 
 export default class Releases extends React.Component {
@@ -27,45 +20,36 @@ export default class Releases extends React.Component {
 
     this.state = {
       collection: [],
-      list: [],
-      selectedList: [],
       len: 0,
-      selected: 0
+      focused: 0
     }
   }
 
   initCollection() {
-    let collection = releases.collection
-    const search = this.props.location.search
+    let collection = releases
+    const search = this.props.match.params
 
-    if (search && search.substring(1)) {
-      const params = new URLSearchParams(search.substring(1))
-
-      if (params.has('artist')) {
-        collection = collection.filter((e) => normalize(e.genre).includes(normalize(params.get('artist'))))
-      }
-
-      if (params.has('year')) {
-        collection = collection.filter((e) => e.release_date === +params.get('year'))
-      }
+    if (search.artist) {
+      collection = collection.filter((e) => normalize(e.title).includes(normalize(search.artist)))
     }
 
-    this.setState({collection, list: collection.map((e, i) => {
-      // Force key to proper refresh when collection changes
-      return <ReleaseItem src={e.artwork_url} alt={e.title} title={e.title} />
-    }), len: collection.length})
+    if (search.year) {
+      collection = collection.filter((e) => e.year === search.year)
+    }
+
+    this.setState({collection, len: collection.length})
   }
 
-  // componentDidUpdate(prevProps) {
-  //   if (this.props.location.search !== prevProps.location.search) {
-  //     this.initCollection()
-  //   }
-  // }
+  componentDidUpdate(prevProps) {
+    if (this.props.match.path !== prevProps.match.path) {
+      this.initCollection()
+    }
+  }
 
   componentDidMount() {
     const eventListener = (e) => {
       const { directionOfMovement } = e.detail
-      const selected = this.state.selected
+      const focused = this.state.focused
       if (!document.querySelector('.release-list')) {
         return
       }
@@ -74,19 +58,19 @@ export default class Releases extends React.Component {
       // const nbLines = Math.floor(this.state.len / nbColumns)
 
       if (directionOfMovement === 'right') {
-        this.setState({selected: selected === this.state.len - 1 ? 0 : selected + 1})
+        this.setState({focused: focused === this.state.len - 1 ? 0 : focused + 1})
       }
 
       if (directionOfMovement === 'left') {
-        this.setState({selected: selected === 0 ? this.state.len - 1: selected - 1})
+        this.setState({focused: focused === 0 ? this.state.len - 1: focused - 1})
       }
 
       if (directionOfMovement === 'top') {
-        this.setState({selected: selected < nbColumns ? this.state.len - nbColumns + selected : selected - nbColumns})
+        this.setState({focused: focused < nbColumns ? this.state.len - nbColumns + focused : focused - nbColumns})
       }
 
       if (directionOfMovement === 'bottom') {
-        this.setState({selected: selected >= this.state.len - nbColumns ? selected - this.state.len + nbColumns : selected + nbColumns})
+        this.setState({focused: focused >= this.state.len - nbColumns ? focused - this.state.len + nbColumns : focused + nbColumns})
       }
     }
 
@@ -100,17 +84,7 @@ export default class Releases extends React.Component {
       }
 
       if (buttonName === 'button_8') {
-        const selectedList = [...this.state.selectedList]
-        const index = selectedList.indexOf(this.state.selected)
-        if (index !== -1) {
-          selectedList.splice(index, 1);
-        } else {
-          selectedList.push(this.state.selected)
-        }
-
-        this.setState({selectedList})
-
-        this.props.onSelect(this.state.collection[this.state.selected])
+        this.props.onSelect(this.state.collection[this.state.focused])
       }
     })
 
@@ -122,19 +96,23 @@ export default class Releases extends React.Component {
   }
 
   render() {
-    const current = this.state.collection.find((e, i) => i === this.state.selected)
-
+    const current = this.state.collection.find((e, i) => i === this.state.focused)
     if (!current) return <div className='row'></div>
 
-    return <div className='row'>
-      <div className='col release-list-container'>
-        <List list={this.state.list} selected={this.state.selected} itemClassName='nes-container' className='release-list' selectedList={this.state.selectedList}/>
+    return <div className='releases'>
+      <div className='release-list-container'>
+        <List focused={this.state.focused} itemClassName='nes-container' className='release-list' selected={this.props.selected}>
+          {this.state.collection.map((e, i) => {
+              // Force key to proper refresh when collection changes
+              return <ReleaseItem key={e.title} src={e.artwork} alt={e.title} title={e.title} selected={this.props.selected.find(f => e.id === f.id)} />
+          })}
+        </List>
       </div>
-      <div className='col-third release-detail'>
+      <div className='release-detail'>
         <div className='release-detail-cover-container'>
-          <PixelatedImg src={current.artwork_url_large} alt={current.title} className='release-detail-cover' resolution='4' size='8' />
+          <PixelatedImg src={current.artwork_large} alt={current.title} className='release-detail-cover' resolution='4' size='8' />
         </div>
-        <h1>{current.title}</h1> <span>({current.release_date})</span>
+        <h1>{current.title}</h1> <span>({current.year})</span>
       </div>
     </div>
   }

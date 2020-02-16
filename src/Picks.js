@@ -20,6 +20,6 @@ export default class Picks extends React.Component
   }
 
   render() {
-    return <div class="qrcode"><canvas ref={this.canvasRef}></canvas></div>
+    return <div className="qrcode"><canvas ref={this.canvasRef}></canvas></div>
   }
 }

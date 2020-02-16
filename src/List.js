@@ -23,18 +23,17 @@ class FocusableElement extends React.Component {
 
   render() {
     return <li ref={this.ref}>
-      <div className={(this.props.focus ? 'is-dark ' : ' ') + this.props.className}>
+      <div className={(this.props.focus ? 'is-dark ' : ' ') + (this.props.className || '')}>
         {this.props.children}
       </div>
     </li>
   }
 }
 
-const List = ({list, selected, itemClassName, className, selectedList = []}) => {
+const List = ({children, focused, itemClassName, className}) => {
   return <ul className={className}>
-    {list.map((item, i) => {
-      const isSelected = selectedList.indexOf(i) !== -1
-      return <FocusableElement className={itemClassName + (isSelected ? ' is-selected' : '')} key={item.key || i} focus={selected === i}>{React.cloneElement(item, { selected, focused: i === selected, isSelected })}</FocusableElement>
+    {children.map((item, i) => {
+      return <FocusableElement className={itemClassName} key={item.key || i} focus={focused === i}>{React.cloneElement(item, { focused: i === focused })}</FocusableElement>
     })}
   </ul>
 }

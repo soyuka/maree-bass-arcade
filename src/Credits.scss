@@ -1,0 +1,22 @@
+	.credits {
+		animation: moving 20s linear infinite;
+	}
+
+	@keyframes moving {
+			from {transform: translateY(400px);}
+			to {transform: translateY(-600px);}
+	}
+
+	.credits {
+		position: fixed;
+		top: 10vh;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		width: 33%;
+		margin: 20px auto;
+		height: 100%;
+		text-align: center;
+		z-index: 3; /** below credits **/
+		line-height: 2.5em;
+	}

@@ -8,6 +8,7 @@
   position: fixed;
   display: flex;
   bottom: 0;
+  z-index: 4; //above credits
 
   .col {
     padding: 0 1em;
