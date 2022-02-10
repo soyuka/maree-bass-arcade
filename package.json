@@ -16,7 +16,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "json2csv": "^4.5.4",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "react-scripts": "3.3.0"
   },
   "scripts": {
